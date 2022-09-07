@@ -72,6 +72,12 @@ const signup: React.FC<Props> = ({}) => {
         </Flex>
       ) : (
         <Box>
+          <Center>
+            <Text fontSize="3xl" as="b">
+              SIGN UP
+            </Text>
+          </Center>
+          <Spacer h="6" />
           <form method="POST" onSubmit={onSubmit}>
             <FormLabel>Email</FormLabel>
             <Input name="email" type="email" required />

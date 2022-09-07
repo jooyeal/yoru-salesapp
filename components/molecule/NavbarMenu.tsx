@@ -18,7 +18,7 @@ const NavbarMenu: React.FC<Props> = ({ href, children }) => {
           borderBottom="1px"
           borderColor="gray.300"
           transition="background-color 300ms ease-in-out"
-          _hover={{ background: "gray.300" }}
+          _hover={{ background: "gray.300", color: "white" }}
         >
           <Text fontSize="lg" as="b">
             {children}

@@ -57,6 +57,12 @@ const SignIn: React.FC<Props> = ({ providers }) => {
       justifyContent="center"
     >
       <Box w="80">
+        <Center>
+          <Text fontSize="3xl" as="b">
+            SIGN IN
+          </Text>
+        </Center>
+        <Spacer h="6" />
         {Object.values(providers).map((provider) => {
           if (provider.name !== "Credentials") {
             return (

@@ -18,7 +18,7 @@ const Layout: React.FC<Props> = ({ children }) => {
   };
 
   return (
-    <div>
+    <Box bgColor="white">
       <Header />
       <Spacer h="16" />
       {children}
@@ -29,7 +29,7 @@ const Layout: React.FC<Props> = ({ children }) => {
           <Footer />
         </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
