@@ -1,22 +1,19 @@
-import React from "react";
-import {
-  getCsrfToken,
-  getProviders,
-  getSession,
-  signIn,
-} from "next-auth/react";
+import React, { useState } from "react";
+import { getProviders, getSession, signIn } from "next-auth/react";
 import { Provider } from "next-auth/providers";
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import {
   Box,
   Button,
+  Center,
   Divider,
   Flex,
   FormControl,
   FormLabel,
   Input,
   Spacer,
+  Text,
 } from "@chakra-ui/react";
 
 type Props = {
@@ -25,6 +22,7 @@ type Props = {
 
 const SignIn: React.FC<Props> = ({ providers }) => {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   //login function for credential login
   const login = async (e: any) => {
@@ -37,11 +35,22 @@ const SignIn: React.FC<Props> = ({ providers }) => {
       redirect: false,
       callbackUrl: "http://localhost:3000",
     });
-    if (!response?.error && response?.url) await router.push(response?.url);
+
+    if (!response?.error) await router.push(response?.url ?? "/");
+    else {
+      switch (response.status) {
+        case 401:
+          setErrorMessage("Please check your email or password");
+          break;
+        default:
+          setErrorMessage("System error is occured");
+      }
+    }
   };
 
   return (
     <Flex
+      w="full"
       className="h-screen"
       flexDirection="column"
       alignItems="center"
@@ -71,12 +80,15 @@ const SignIn: React.FC<Props> = ({ providers }) => {
             <FormLabel>Password</FormLabel>
             <Input name="password" type="password" />
             <Spacer h="5" />
-            <Button w="full" type="submit">
-              Sign in
+            <Button colorScheme="teal" w="full" type="submit">
+              SIGN IN
             </Button>
           </FormControl>
         </form>
       </Box>
+      <Center>
+        <Text color="red">{errorMessage}</Text>
+      </Center>
     </Flex>
   );
 };
@@ -88,7 +100,6 @@ export const getServerSideProps: GetServerSideProps = async (
 ) => {
   const session = await getSession(context);
   const providers = await getProviders();
-  const csrfToken = await getCsrfToken(context);
 
   //if session is existed redirect home
   if (session)
@@ -99,6 +110,6 @@ export const getServerSideProps: GetServerSideProps = async (
       },
     };
   return {
-    props: { providers: providers, csrfToken: csrfToken },
+    props: { providers: providers },
   };
 };

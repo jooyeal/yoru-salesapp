@@ -1,8 +1,10 @@
 import NextAuth from "next-auth";
 import GoogleProviders from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "../../../lib/prisma";
 
 const options = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProviders({
       clientId: process.env.GOOGLE_CLIENT_ID,
@@ -16,16 +18,20 @@ const options = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        const user = { id: 1, name: "J Smith", email: "jyol1234@example.com" };
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return credentials;
-        } else {
-          // If you return null or false then the credentials will be rejected
-          return null;
-          // You can also Reject this callback with an Error or with a URL:
-          // throw new Error("error message") // Redirect to error page
-          // throw "/path/to/redirect"        // Redirect to a URL
+        try {
+          const user = await prisma.user.findFirst({
+            where: {
+              email: req.body.email,
+              password: req.body.password,
+            },
+          });
+          if (user) {
+            return user;
+          } else {
+            return null;
+          }
+        } catch (error) {
+          console.log(error);
         }
       },
     }),
@@ -33,18 +39,15 @@ const options = {
   pages: {
     signIn: "/auth/signin",
   },
-  // emailのドメイン制限を入れたい場合は以下のcallbacksを入れてください
   callbacks: {
-    callbacks: {
-      async jwt(token, user, account, profile, isNewUser) {
-        token.userId = user;
-        return token;
-      },
-      async session(session, userOrToken) {
-        session.user.userId = userOrToken.userId;
-        session.user.test = userOrToken.test;
-        return session;
-      },
+    async signIn({ account, profile }) {
+      return true;
+    },
+    async jwt(token, user, account, profile, isNewUser) {
+      return token;
+    },
+    async session(session, userOrToken) {
+      return session;
     },
   },
   // A database is optional, but required to persist accounts in a database
