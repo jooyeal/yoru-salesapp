@@ -1,10 +1,12 @@
 import ApiClient from "./apiClient";
 
-type SignUpRequestData = {
+interface SignUpRequestData {
   email: string;
   password: string;
-  username: string;
-};
+  nickname: string;
+  firstname: string;
+  lastname: string;
+}
 
 interface SignUpParameter {
   data: SignUpRequestData;

@@ -9,14 +9,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { signUpWrapper } from "../../lib/services/signUpWrapper";
 
 type Props = {};
 
-const signup: React.FC<Props> = ({}) => {
-  const router = useRouter();
+const Signup: React.FC<Props> = ({}) => {
   const [passwordError, setPasswordError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isSignUpSucceed, setIsSignUpSucceed] = useState<boolean>(false);
@@ -26,7 +24,9 @@ const signup: React.FC<Props> = ({}) => {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const passwordVerification = e.target.passwordVerification.value;
-    const username = e.target.username.value;
+    const nickname = e.target.nickname.value;
+    const firstname = e.target.firstname.value;
+    const lastname = e.target.lastname.value;
 
     if (password !== passwordVerification) {
       setPasswordError(true);
@@ -35,7 +35,7 @@ const signup: React.FC<Props> = ({}) => {
       setPasswordError(false);
       setErrorMessage(undefined);
       signUpWrapper({
-        data: { email, password, username },
+        data: { email, password, nickname, firstname, lastname },
         successCallback: (status, data) => {
           setErrorMessage(undefined);
           setIsSignUpSucceed(true);
@@ -44,7 +44,7 @@ const signup: React.FC<Props> = ({}) => {
       });
     }
   };
-  console.log(isSignUpSucceed);
+
   return (
     <Flex
       w="full"
@@ -95,8 +95,12 @@ const signup: React.FC<Props> = ({}) => {
               required
               isInvalid={passwordError}
             />
-            <FormLabel>User Name</FormLabel>
-            <Input name="username" type="text" required />
+            <FormLabel>Firstname</FormLabel>
+            <Input name="firstname" type="text" required />
+            <FormLabel>Lastname</FormLabel>
+            <Input name="lastname" type="text" required />
+            <FormLabel>Nickname</FormLabel>
+            <Input name="nickname" type="text" required />
             <Spacer h="5" />
             <Button colorScheme="teal" w="full" type="submit">
               SIGN UP
@@ -112,4 +116,4 @@ const signup: React.FC<Props> = ({}) => {
   );
 };
 
-export default signup;
+export default Signup;

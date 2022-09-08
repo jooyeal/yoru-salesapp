@@ -2,20 +2,16 @@ import { Box } from "@chakra-ui/react";
 import React from "react";
 import NavbarMenu from "../molecule/NavbarMenu";
 import { NAVBAR_WIDTH } from "../../constants/number";
+import NavbarLayout from "../molecule/NavbarLayout";
 
 type Props = {};
 
 const Navbar: React.FC<Props> = ({}) => {
   return (
-    <Box
-      className="h-screen"
-      position="fixed"
-      bgColor="gray.50"
-      w={NAVBAR_WIDTH}
-    >
-      <NavbarMenu href="">ANIME</NavbarMenu>
+    <NavbarLayout>
+      <NavbarMenu href="/anime">ANIME</NavbarMenu>
       <NavbarMenu href="">FOOD</NavbarMenu>
-    </Box>
+    </NavbarLayout>
   );
 };
 

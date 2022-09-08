@@ -5,17 +5,22 @@ import {
   Flex,
   IconButton,
   Input,
+  Spacer,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import { BsCart } from "react-icons/bs";
+import { BiUser } from "react-icons/bi";
 import LoginButton from "../molecule/LoginButton";
+import SearchResultWrapper from "./SearchResultWrapper";
 
 type Props = {};
 
 const Header: React.FC<Props> = () => {
   const session = useSession();
+  const [isSearching, setIsSearching] = useState<boolean>(false);
 
   return (
     <Flex
@@ -33,13 +38,14 @@ const Header: React.FC<Props> = () => {
         <Link href="/">logo </Link>
       </Box>
       <Flex justifyContent="center">
-        <form onSubmit={() => console.log("submit")}>
-          <Flex flex={1}>
+        <form className="fixed top-3" onSubmit={() => console.log("submit")}>
+          <Flex>
             <Input
               variant="filled"
               placeholder="Search"
               roundedTopEnd="none"
               roundedBottomEnd="none"
+              onFocus={() => setIsSearching(true)}
             />
             <IconButton
               type="submit"
@@ -49,6 +55,7 @@ const Header: React.FC<Props> = () => {
               roundedBottomStart="none"
             />
           </Flex>
+          {isSearching && <SearchResultWrapper />}
         </form>
       </Flex>
       <Flex flex={1} justifyContent="flex-end">
@@ -59,6 +66,12 @@ const Header: React.FC<Props> = () => {
               <Button size="sm">SIGN UP</Button>
             </Link>
           )}
+          <Link href="/cart">
+            <IconButton size="sm" aria-label="cart button" icon={<BsCart />} />
+          </Link>
+          <Link href="/profile">
+            <IconButton size="sm" aria-label="user-profile" icon={<BiUser />} />
+          </Link>
         </ButtonGroup>
       </Flex>
     </Flex>

@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prisma";
 
-type Data = {
+interface SignUpData {
   message: string;
-};
+}
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<SignUpData>
 ) {
   if (req.method == "POST") {
     try {
@@ -21,10 +21,12 @@ export default async function handler(
               .status(401)
               .json({ message: "Email is already existed" });
           default:
+            console.log(error);
             return res.status(500).json({ message: "System error is occured" });
         }
       } else {
-        return res.status(500);
+        console.log(error);
+        return res.status(500).json({ message: "System error is occured" });
       }
     }
   } else {

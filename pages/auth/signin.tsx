@@ -20,7 +20,7 @@ type Props = {
   providers: Provider;
 };
 
-const SignIn: React.FC<Props> = ({ providers }) => {
+const Signin: React.FC<Props> = ({ providers }) => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
@@ -99,7 +99,7 @@ const SignIn: React.FC<Props> = ({ providers }) => {
   );
 };
 
-export default SignIn;
+export default Signin;
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
