@@ -4,10 +4,17 @@ import React from "react";
 import ProfileNavbar from "../components/group/ProfileNavbar";
 import { NAVBAR_WIDTH } from "../constants/number";
 import ProfileComponent from "../components/pageLayout/Profile";
+import { GetServerSidePropsContext } from "next";
+import { getSession } from "next-auth/react";
+import {} from "../lib/services/profileWrapper";
+import ApiClient from "../lib/services/apiClient";
 
-type Props = {};
+interface Props {
+  errorMessage?: string;
+  userInfo: UserInfo;
+}
 
-const Profile = (props: Props) => {
+const Profile: React.FC<Props> = ({ userInfo, errorMessage }) => {
   return (
     <Box>
       <Head>
@@ -17,10 +24,60 @@ const Profile = (props: Props) => {
       </Head>
       <ProfileNavbar />
       <Box pl={NAVBAR_WIDTH}>
-        <ProfileComponent />
+        <ProfileComponent userInfo={userInfo} errorMessage={errorMessage} />
       </Box>
     </Box>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
+
+  if (!session)
+    return {
+      redirect: {
+        destination: "/auth/signin",
+        permanent: false,
+      },
+    };
+
+  const userId = session?.id;
+  if (userId) {
+    try {
+      const res = await ApiClient.createInstance().get("/api/profile", {
+        params: { userId },
+      });
+      const userInfo: UserInfo = {
+        nickname: res.data.userInfo.nickname,
+        firstname: res.data.userInfo.firstname,
+        lastname: res.data.userInfo.lastname,
+        email: res.data.userInfo.email,
+        phoneNumber: res.data.userInfo.phoneNumber,
+        address: res.data.userInfo.address,
+      };
+
+      return {
+        props: {
+          userInfo,
+        },
+      };
+    } catch (error) {
+      return {
+        props: {
+          errorMessage: error,
+        },
+      };
+    }
+  } else {
+    return {
+      redirect: {
+        destination: "/auth/signin",
+        permanent: false,
+      },
+    };
+  }
 };
 
 export default Profile;

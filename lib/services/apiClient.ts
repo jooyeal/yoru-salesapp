@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-const BASE_URL = "/";
+const BASE_URL = "http://localhost:3000";
 
 class ApiClient {
   static createInstance() {
@@ -16,14 +16,17 @@ class ApiClient {
 
   static async get(
     url: string,
-    callback: (data: AxiosResponse) => void,
+    successCallback: (status: number | undefined, data: any) => void,
+    errorCallback: (status: number | undefined, data: any) => void,
     data: object
   ) {
     const instance = this.createInstance();
     return await instance
-      .get(url, data)
-      .then((response) => callback(response.data))
-      .catch((error) => Promise.reject(error));
+      .get(url, { params: data })
+      .then((response) => successCallback(response.status, response.data))
+      .catch((error: AxiosError) =>
+        errorCallback(error.response?.status, error.response?.data)
+      );
   }
 
   /**
@@ -43,6 +46,21 @@ class ApiClient {
     const instance = this.createInstance();
     return await instance
       .post(url, data)
+      .then((response) => successCallback(response.status, response.data))
+      .catch((error: AxiosError) =>
+        errorCallback(error.response?.status, error.response?.data)
+      );
+  }
+
+  static async put(
+    url: string,
+    successCallback: (status: number | undefined, data: any) => void,
+    errorCallback: (status: number | undefined, data: any) => void,
+    data: object
+  ) {
+    const instance = this.createInstance();
+    return await instance
+      .put(url, data)
       .then((response) => successCallback(response.status, response.data))
       .catch((error: AxiosError) =>
         errorCallback(error.response?.status, error.response?.data)

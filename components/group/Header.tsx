@@ -15,12 +15,15 @@ import { BsCart } from "react-icons/bs";
 import { BiUser } from "react-icons/bi";
 import LoginButton from "../molecule/LoginButton";
 import SearchResultWrapper from "./SearchResultWrapper";
+import { useDebouncedCallback } from "use-debounce";
 
 type Props = {};
 
 const Header: React.FC<Props> = () => {
   const session = useSession();
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  //TODO: searching debounced
+  const debounced = useDebouncedCallback((value) => console.log(value), 500);
 
   return (
     <Flex
@@ -46,6 +49,7 @@ const Header: React.FC<Props> = () => {
               roundedTopEnd="none"
               roundedBottomEnd="none"
               onFocus={() => setIsSearching(true)}
+              onChange={(e) => debounced(e.target.value)}
             />
             <IconButton
               type="submit"
@@ -55,7 +59,9 @@ const Header: React.FC<Props> = () => {
               roundedBottomStart="none"
             />
           </Flex>
-          {isSearching && <SearchResultWrapper />}
+          {isSearching && (
+            <SearchResultWrapper setIsSearching={setIsSearching} />
+          )}
         </form>
       </Flex>
       <Flex flex={1} justifyContent="flex-end">

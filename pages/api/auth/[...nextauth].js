@@ -26,7 +26,10 @@ const options = {
             },
           });
           if (user) {
-            return user;
+            return {
+              id: user.id,
+              email: user.email,
+            };
           } else {
             return null;
           }
@@ -43,10 +46,17 @@ const options = {
     async signIn({ account, profile }) {
       return true;
     },
-    async jwt(token, user, account, profile, isNewUser) {
+    async jwt({ token, user, account, profile, isNewUser }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
       return token;
     },
-    async session(session, userOrToken) {
+    async session({ session, user, token }) {
+      if (token) {
+        session.id = token.id;
+      }
       return session;
     },
   },

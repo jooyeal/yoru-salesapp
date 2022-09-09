@@ -1,13 +1,15 @@
 import { Box } from "@chakra-ui/react";
-import React, { useEffect, useRef } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useRef } from "react";
 import useClickOutSide from "../../hooks/useClickOutSide";
 import SearchResult from "../molecule/SearchResult";
 
-type Props = {};
+type Props = {
+  setIsSearching: Dispatch<SetStateAction<boolean>>;
+};
 
-const SearchResultWrapper: React.FC<Props> = () => {
+const SearchResultWrapper: React.FC<Props> = ({ setIsSearching }) => {
   const ref = useRef<HTMLDivElement>(null);
-  useClickOutSide(ref);
+  useClickOutSide(ref, () => setIsSearching(false));
 
   return (
     <Box
@@ -18,7 +20,9 @@ const SearchResultWrapper: React.FC<Props> = () => {
       shadow="md"
       bgColor="white"
     >
-      <SearchResult href="/profile" />
+      <Box onClick={() => setIsSearching(false)}>
+        <SearchResult href="/profile" />
+      </Box>
     </Box>
   );
 };

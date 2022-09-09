@@ -12,12 +12,12 @@ import Layout from "../components/Layout";
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={theme}>
+      <ChakraProvider>
         <CSSReset />
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </ThemeProvider>
+      </ChakraProvider>
     </SessionProvider>
   );
 }

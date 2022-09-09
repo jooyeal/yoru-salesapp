@@ -1,6 +1,6 @@
 import ApiClient from "./apiClient";
 
-interface SignUpRequestData {
+export interface SignUpRequestData {
   email: string;
   password: string;
   nickname: string;
